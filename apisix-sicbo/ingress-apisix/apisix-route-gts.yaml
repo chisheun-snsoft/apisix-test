@@ -1,0 +1,31 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: sicbo-prod-apisix-gts-route
+  namespace: sicbo-prod
+spec:
+  http:
+    - name: gts
+      match:
+        hosts:
+          - sicbo-gts.rouletteplus.org
+        paths:
+          - /*
+      backends:
+      - serviceName: apisix-gts
+        servicePort: 6610
+      websocket: true
+      plugins:
+        - name: prometheus
+          enable: true
+          
+        - name: limit-conn
+          enable: false
+          config:
+            conn: 10
+            burst: 0
+            default_conn_delay: 10
+            rejected_code: 503
+            key: remote_addr
+        - name: traffic-split
+          enable: true

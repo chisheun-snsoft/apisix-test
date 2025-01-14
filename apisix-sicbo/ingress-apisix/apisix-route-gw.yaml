@@ -1,0 +1,31 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: sicbo-prod-apisix-gw-route
+  namespace: sicbo-prod
+spec:
+  http:
+    - name: gw
+      match:
+        hosts:
+          - sicbo-gw.rouletteplus.org
+        paths:
+          - /*
+      backends:
+      - serviceName: apisix-gw
+        servicePort: 6601
+      websocket: true
+      plugins:
+        - name: prometheus
+          enable: true
+          
+        - name: limit-conn
+          enable: false
+          config:
+            conn: 10
+            burst: 0
+            default_conn_delay: 10
+            rejected_code: 503
+            key: remote_addr
+        - name: traffic-split
+          enable: true
