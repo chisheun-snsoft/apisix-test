@@ -85,7 +85,7 @@ hostNetwork: false
 
 # -- Node labels for Apache APISIX pod assignment
 nodeSelector: 
-  role: apisix
+  role: app
 # -- List of node taints to tolerate
 tolerations: []
 # -- Set affinity for Apache APISIX deploy
